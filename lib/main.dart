@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,9 +24,9 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
       ),
-      home: const MyHomePage(title: 'dadosfida'),
+      home: const MyHomePage(title: 'next-gen-dadosfida'),
     );
   }
 }
@@ -48,17 +50,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  void _launchURL(String url) async {
+    if (!await launch(url)) throw 'Could not launch $url';
   }
 
   @override
@@ -70,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: Colors.teal,
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
@@ -95,20 +89,42 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("dado-sfida"),
+            const Text("dado-sfida"),
             Text(
-              'pesca una carta',
+              'pesca una carta e tenta la fortuna',
               style: Theme.of(context).textTheme.headline4,
             ),
+            const SizedBox(height: 30),
+            CupertinoButton.filled(
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('AlertDialog Title'),
+                  content: const Text('AlertDialog description'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              ),
+              child: const Text('Enabled'),
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromARGB(213, 73, 255, 1),
-        onPressed: _incrementCounter,
+        backgroundColor: const Color.fromARGB(213, 73, 255, 1),
+        onPressed: () =>
+            _launchURL("https://github.com/Alessandroxc/flutter_dado-sfida"),
         tooltip: 'Increment',
         child: const Icon(Icons.card_giftcard),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ), // This trailing comma makes auto-formatting nicer  for build methods.
     );
   }
 }
